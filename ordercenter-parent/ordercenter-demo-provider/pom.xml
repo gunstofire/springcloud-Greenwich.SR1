@@ -34,4 +34,44 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+	
+	<build>
+		<finalName>ordercenter-demo-provider</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>${spring-boot.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- 不打包test下内容 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.18.1</version>
+				<configuration>
+					<skipTests>true</skipTests>
+				</configuration>
+			</plugin>
+			<!-- 如需合并发布请打开插件,同时排除通用配置类信息(配置class、启动配置、以及日志配置等),防止相同配置启动冲突,如作独立服务发布,需屏蔽此插件配置 
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<excludes>
+						<exclude>com/ivt/smartmall/config/*.class</exclude>
+						<exclude>com/ivt/smartmall/DemoApplication.class</exclude>
+						<exclude>application.yml</exclude>
+						<exclude>logback-spring.xml</exclude>
+					</excludes>
+				</configuration>
+			</plugin>-->
+		</plugins>
+	</build>
 </project>
