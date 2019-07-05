@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: demo-provider
+  boot: 
+    admin: 
+      client: 
+        url: http://localhost:54321
+# ===================================================================
+# 服务发现
+# ===================================================================    
+eureka: 
+  instance: 
+    prefer-ip-address: true
+    instanceId: ${spring.application.name}:${spring.cloud.client.ip-address}:${server.port}
+    lease-expiration-duration-in-seconds: 15  #超时时间,默认为90秒,该值至少应该大于leaseRenewalIntervalInSeconds
+    lease-renewal-interval-in-seconds: 5      #eureka client发送心跳给server端的频率,默认30秒
+  client: 
+    register-with-eureka: true
+    registryFetchIntervalSeconds: 5       #取服务注册信息间隔，默认为30秒
+    #指定服务注册中心的地址,高可用集群时指向其他的eureka服务相互注册，多个用","分割
+    serviceUrl: 
+      defaultZone: http://eureka1:8761/eureka/, http://eureka2:8762/eureka/
+
+management.security.enabled: false
+
+server:
+  port: 6801

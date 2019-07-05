@@ -1,0 +1,47 @@
+#spring
+spring: 
+  application: 
+    name: admin-server
+  boot: 
+    admin: 
+      client: 
+        url: http://localhost:54321
+
+#应用服务器配置
+server: 
+  port: 54321
+
+#management.security.enabled: false
+
+# 2.0开始，actuator默认不开放，所以要设置为开放
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"  #暴露所有的端点我们可以看到更多应用相关信息
+  endpoint:
+    health:
+      show-details: ALWAYS  #health endpoint是否必须显示全部细节
+
+# ===================================================================
+# 服务发现
+# ===================================================================    
+eureka: 
+  instance: 
+    prefer-ip-address: true
+    instanceId: ${spring.application.name}:${spring.cloud.client.ip-address}:${server.port}
+    lease-expiration-duration-in-seconds: 15  #超时时间,默认为90秒,该值至少应该大于leaseRenewalIntervalInSeconds
+    lease-renewal-interval-in-seconds: 5      #eureka client发送心跳给server端的频率,默认30秒
+  client: 
+    register-with-eureka: true
+    registryFetchIntervalSeconds: 5       #取服务注册信息间隔，默认为30秒
+    #指定服务注册中心的地址,高可用集群时指向其他的eureka服务相互注册，多个用","分割
+    serviceUrl: 
+      defaultZone: http://eureka1:8761/eureka/, http://eureka2:8762/eureka/
+      
+# ===================================================================
+# 日志配置
+# ===================================================================        
+logging: 
+  config: classpath:cust-logback.xml
+  path: /opt/logs

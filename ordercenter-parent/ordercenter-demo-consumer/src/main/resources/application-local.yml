@@ -1,0 +1,74 @@
+spring:
+  application:
+    name: demo-consumer
+  boot: 
+    admin: 
+      client: 
+        url: http://localhost:54321 
+server:
+  port: 6701
+
+# ===================================================================
+# 服务发现
+# ===================================================================    
+eureka: 
+  instance: 
+    prefer-ip-address: true
+    instanceId: ${spring.application.name}:${spring.cloud.client.ip-address}:${server.port}
+    lease-expiration-duration-in-seconds: 15  #超时时间,默认为90秒,该值至少应该大于leaseRenewalIntervalInSeconds
+    lease-renewal-interval-in-seconds: 5      #eureka client发送心跳给server端的频率,默认30秒
+  client: 
+    register-with-eureka: true
+    registryFetchIntervalSeconds: 5       #取服务注册信息间隔，默认为30秒
+    #指定服务注册中心的地址,高可用集群时指向其他的eureka服务相互注册，多个用","分割
+    serviceUrl: 
+      defaultZone: http://eureka1:8761/eureka/, http://eureka2:8762/eureka/
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"   #暴露所有的端点我们可以看到更多的服务实例相关信息，
+  endpoint:
+    health:
+      show-details: ALWAYS   #health endpoint是否必须显示全部细节
+
+#开启Hystrix
+feign:
+  hystrix:
+    enabled: true
+
+#ribbon全局配置(RibbonRoutingFilter时生效)
+ribbon:
+  ReadTimeout: 1000
+  ConnectTimeout: 1000
+  MaxAutoRetries: 0
+  MaxAutoRetriesNextServer: 1
+
+#Hystrix启用超时时间
+hystrix: 
+  command: 
+    default: 
+      execution: 
+        timeout: 
+          enabled: true
+        #Hystrix断路器的超时时间，默认是1s，断路器的超时时间需要大于ribbon的超时时间，不然不会触发重试。
+        isolation: 
+          thread: 
+            timeoutInMilliseconds: 5000
+
+#management.security.enabled: false
+
+# ===================================================================
+# springboot admin额外配置信息,显示在界面信息
+# =================================================================== 
+info.name: "demo-consumer"
+info.version: "0.0.1"
+info.description: "测试消费服务"
+info.springcloud-version: "Greenwich.SR1"
+    
+# ===================================================================
+# 日志配置
+# ===================================================================      
+logging: 
+  config: classpath:cust-logback.xml
+  path: /opt/logs
