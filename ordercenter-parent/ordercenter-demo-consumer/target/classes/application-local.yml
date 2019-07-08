@@ -56,7 +56,7 @@ hystrix:
           thread: 
             timeoutInMilliseconds: 5000
 
-#management.security.enabled: false
+management.security.enabled: false
 
 # ===================================================================
 # springboot admin额外配置信息,显示在界面信息
